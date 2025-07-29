@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardAdminController;
+use App\Http\Controllers\Admin\KelolaUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Dosen\DashboardDosenController;
 use App\Http\Controllers\Dosen\TugasController;
@@ -11,8 +13,27 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard/superadmin', [DashboardController::class, 'superadmin'])->name('dashboard.superadmin');
+    Route::get('/dashboard/staff', [DashboardAdminController::class, 'index'])->name('dashboard.superadmin');
+    Route::get('/admin/users', [KelolaUserController::class, 'index'])->name('admin.user.index');
+    Route::get('/admin/users/role/{role}', [KelolaUserController::class, 'byRole'])->name('admin.user.byrole');
+    Route::prefix('admin/users')->name('admin.user.')->group(function () {
+        Route::get('/', [KelolaUserController::class, 'index'])->name('index');
+        Route::get('/role/{role}', [KelolaUserController::class, 'byRole'])->name('byrole');
+        Route::get('/create/{role}', [KelolaUserController::class, 'create'])->name('create');
+        Route::post('/store', [KelolaUserController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [KelolaUserController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [KelolaUserController::class, 'update'])->name('update');
+        Route::delete('/{id}', [KelolaUserController::class, 'destroy'])->name('destroy');
+    });
 
+    Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+        Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('announcement.index');
+        Route::get('/pengumuman/create', [PengumumanController::class, 'create'])->name('announcement.create');
+        Route::post('/pengumuman', [PengumumanController::class, 'store'])->name('announcement.store');
+        Route::get('/pengumuman/{id}/edit', [PengumumanController::class, 'edit'])->name('announcement.edit');
+        Route::put('/pengumuman/{id}', [PengumumanController::class, 'update'])->name('announcement.update');
+        Route::delete('/pengumuman/{id}', [PengumumanController::class, 'destroy'])->name('announcement.destroy');
+    });
     // DOSEN
     Route::get('/dashboard/dosen', [DashboardController::class, 'dosen'])->name('dashboard.dosen');
     Route::get('/dashboard/dosen', [DashboardDosenController::class, 'index'])->name('dashboard.dosen')->middleware('auth');
@@ -32,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::middleware('auth')->group(function () {

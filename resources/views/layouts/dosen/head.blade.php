@@ -14,10 +14,6 @@
 </head>
 <body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
 
-    <!-- Header -->
-    <div class="bg-indigo-600 text-white px-4 py-3 flex justify-between items-center">
-        <span class="font-bold text-lg">SIMAMAT</span>
-    </div>
 
     <!-- Konten -->
     @yield('konten')
@@ -27,5 +23,15 @@
 
     <!-- JS Section -->
     @yield('js')
+    
+    <!-- Loading Script -->
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('content').classList.remove('hidden');
+            }, 2000); // 2 detik = 2000 ms
+        });
+    </script>
 </body>
 </html>
